@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Module file for Site Api Key.
+*/
+
+/**
+ * {@inheritdoc}
+*/
+function site_api_key_form_system_site_information_settings_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+ // Load the site api key out of configuration.
+ $site_api_key = \Drupal::config('system.site')->get('siteapikey')?\Drupal::config('system.site')->get('siteapikey'):t('No API Key yet.');
+ // check for an administrator role when rendering the form
+   if(in_array("administrator", \Drupal::currentUser()->getRoles())) {
+     $form['site_information']['siteapikey'] = [
+       '#type' => 'textfield',
+       '#title' => t('Site API Key'),
+       '#description' => t('Enables content access using a 16 character long key.'),
+       '#default_value' => $site_api_key,
+       '#weight' => '3',
+     ];
+     $form['#validate'][] = 'Drupal\site_apikey\Controller\SiteApikeyController::site_apikey_form_validate';
+     $form['#submit'][] = 'Drupal\site_apikey\Controller\SiteApikeyController::site_apikey_form_submit';			
+     }
+   }
+
+/**
+ * Implements hook_variable_info().
+ */
+
+function site_api_key_variable_info($options) {
+  // Site configuration, site information
+  $variables['siteapikey'] = [
+    'type' => 'text',
+    'title' => t('Site API Key', [], $options),
+    'default' => '',
+    'description' => t("Enables content access using a 16 character long key.", [], $options),
+    'group' => 'site_information',
+  ];
+  return $variables;
+}

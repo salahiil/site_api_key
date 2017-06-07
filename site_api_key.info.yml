@@ -1,0 +1,9 @@
+name: Site API Key
+description: A module to set a site-wide API Key for the site as well as display a JSON representation of a node type page using the site API key.'
+package: Development
+type: module
+version: 1.0
+core: '8.x'
+dependencies:
+  - node
+  - serialization
